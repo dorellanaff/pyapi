@@ -15,7 +15,7 @@ class selenium:
     ff.headless = True
 
     def __init__(self):
-        self.driver = Firefox(options=self.ff, executable_path='geckodriver.exe')
+        self.driver = Firefox(options=self.ff, executable_path='geckodriver')
         print('Iniciado')
         pass
 
