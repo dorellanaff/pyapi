@@ -12,7 +12,7 @@ url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antece
 
 class selenium:
     ff = FirefoxOptions()
-    ff.headless = True
+    ff.headless = True # Cambiar a False, para ejecutar Firefox en modo ventana
 
     def __init__(self):
         self.driver = Firefox(options=self.ff, executable_path='geckodriver')
