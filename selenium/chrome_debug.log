@@ -1,0 +1,8 @@
+[20760:26200:0515/210716.674:ERROR:browser_switcher_service.cc(238)] XXX Init()
+[6396:25624:0515/210720.918:ERROR:cache_util_win.cc(21)] Unable to move the cache: Acceso denegado. (0x5)
+[6396:25624:0515/210720.970:ERROR:cache_util.cc(138)] Unable to move cache folder C:\Users\danie\Desktop\antecedentes\pyantecedentes\selenium\ShaderCache\GPUCache to C:\Users\danie\Desktop\antecedentes\pyantecedentes\selenium\ShaderCache\old_GPUCache_000
+[6396:25624:0515/210720.980:ERROR:disk_cache.cc(184)] Unable to create cache
+[6396:25624:0515/210720.997:ERROR:shader_disk_cache.cc(606)] Shader Cache Creation failed: -2
+[6396:19944:0515/210721.161:WARNING:pref_notifier_impl.cc(40)] Pref observer for browser.relaunch_notification_period found at shutdown.
+[20760:26200:0515/210734.012:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[20760:26200:0515/210734.012:WARNING:pref_notifier_impl.cc(40)] Pref observer for browser.relaunch_notification_period found at shutdown.

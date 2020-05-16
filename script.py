@@ -12,21 +12,14 @@ url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antece
 
 class selenium:
     ff = FirefoxOptions()
-<<<<<<< HEAD
     ff.headless = True
     gc = Options()
-    gc.add_argument('user-data-dir=selenium')
-    gc.add_argument('headless')
-    gc.add_argument('no-sandbox')
+    gc.add_argument('user-data-dir=sel')
+    #gc.add_argument('headless')
+    #gc.add_argument('no-sandbox')
 
     def __init__(self):
-        self.driver = Chrome(options=self.gc, executable_path='./chromedriver')
-=======
-    ff.headless = True # Cambiar a False, para ejecutar Firefox en modo ventana
-
-    def __init__(self):
-        self.driver = Firefox(options=self.ff, executable_path='geckodriver')
->>>>>>> 8b1fb78764f3b8456c56dac12a42a5136ef667fe
+        self.driver = Chrome(options=self.gc, executable_path='./drivers/chromedriver.exe')
         print('Iniciado')
         pass
 
@@ -71,8 +64,4 @@ class selenium:
             return re
         except Exception as e:
             print(e)
-<<<<<<< HEAD
             return {'error'}
-=======
-            return {error}
->>>>>>> 8b1fb78764f3b8456c56dac12a42a5136ef667fe
