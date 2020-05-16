@@ -13,9 +13,13 @@ url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antece
 class selenium:
     ff = FirefoxOptions()
     ff.headless = True
+    gc = Options()
+    gc.add_argument('user-data-dir=selenium')
+    gc.add_argument('headless')
+    gc.add_argument('no-sandbox')
 
     def __init__(self):
-        self.driver = Firefox(options=self.ff, executable_path='geckodriver.exe')
+        self.driver = Chrome(options=self.gc, executable_path='./chromedriver')
         print('Iniciado')
         pass
 
@@ -60,4 +64,4 @@ class selenium:
             return re
         except Exception as e:
             print(e)
-            return {error}
+            return {'error'}
