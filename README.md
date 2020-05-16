@@ -4,7 +4,7 @@ Pasos
 
 1. (Opcional, Recomendado)<br/>
  Crear una nuevo entorno virtual:<br/>
-  virtualenv antecedentes
+  virtualenv venv
  
 2. Si no creo entorno virtual, ir al paso 3<br/>
  source venv/bin/activate (Linux)<br/>
