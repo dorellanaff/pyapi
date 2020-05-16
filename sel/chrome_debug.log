@@ -1,1 +1,1 @@
-[6888:15248:0515/222634.453:ERROR:browser_switcher_service.cc(238)] XXX Init()
+[16617:16617:0516/052353.208214:ERROR:zygote_host_impl_linux.cc(89)] Running as root without --no-sandbox is not supported. See https://crbug.com/638180.

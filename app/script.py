@@ -1,10 +1,11 @@
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver import Firefox, FirefoxOptions, FirefoxProfile, Chrome
+
 from selenium.webdriver.common.keys import Keys
 # Selenium Explicit Waits
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import Firefox, FirefoxOptions, FirefoxProfile, Chrome
 from time import strftime,sleep
 import datetime
 
@@ -15,11 +16,12 @@ class selenium:
     ff.headless = True
     gc = Options()
     gc.add_argument('user-data-dir=sel')
-    #gc.add_argument('headless')
-    #gc.add_argument('no-sandbox')
+    gc.add_argument('headless')
+    gc.add_argument('no-sandbox')
+    wait = True
 
     def __init__(self):
-        self.driver = Chrome(options=self.gc, executable_path='./drivers/chromedriver.exe')
+        self.driver = Chrome(options=self.gc, executable_path='./app/drivers/chromedriver')
         print('Iniciado')
         pass
 
@@ -44,6 +46,7 @@ class selenium:
     def run(self, ci):
         re = {}
         try:
+            self.wait = False
             self.driver.get(url)
             startscript = datetime.datetime.now()
             #print(driver.title)
@@ -64,4 +67,6 @@ class selenium:
             return re
         except Exception as e:
             print(e)
-            return {'error'}
+            return {'error': 'error'}
+        finally:
+            self.wait = True
