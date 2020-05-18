@@ -73,7 +73,6 @@ class selenium:
                 antecedentes = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "dvAntecedent1"))) # presence_of_element_located
                 endscript = datetime.datetime.now()
                 duration = endscript - startscript
-                print("Duracion script: {}".format(duration))
                 re = {'CI': ci,'Name': str(name.text), 'Antecedentes': str(antecedentes.text), 'response': '{}'.format(str(duration))}
             else:
                 re = {'error': 'ci not found'}
