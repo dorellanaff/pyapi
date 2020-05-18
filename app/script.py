@@ -25,12 +25,12 @@ class selenium:
             gc.add_argument('user-data-dir=sel')
             if os.name == 'nt':
                 print('Operative System> Windows')
-                return Chrome(options=self.gc, executable_path='./app/drivers/chromedriver.exe')
+                return Chrome(options=gc, executable_path='./app/drivers/chromedriver.exe')
             else:
                 print('Operative System> Unix')
                 gc.add_argument('headless')
                 gc.add_argument('no-sandbox')
-                return Chrome(options=self.gc, executable_path='./app/drivers/chromedriver')
+                return Chrome(options=gc, executable_path='./app/drivers/chromedriver')
         except Exception as e:
             print(e)
         finally:
