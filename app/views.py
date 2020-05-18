@@ -10,8 +10,9 @@ browser = selenium()
 @app.route("/api", strict_slashes=False) #
 def get_antecedentes():
     ci = request.args.get('ci')
+    print('Buscando {}'.format(ci))
     while True:
-        if browser.wait:
+        if browser.wait == True:
             re = browser.run(ci)
             #job = q.enqueue_call(func=script.run, args=(ci,), timeout=-1)
             #id = job.get_id()
