@@ -7,25 +7,36 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxProfile, Chrome
 from time import strftime,sleep
-import datetime
+import datetime, os
 
 url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
 
 class selenium:
-    ff = FirefoxOptions()
-    ff.headless = True
-    gc = Options()
-    gc.add_argument('user-data-dir=sel')
-    #gc.add_argument('headless')
-    #gc.add_argument('no-sandbox')
     wait = True
-
+    
     def __init__(self):
-        self.driver = Chrome(options=self.gc, executable_path='./app/drivers/chromedriver.exe')
+        self.driver = self.iniciar()
         print('Iniciado Webdriver')
         pass
 
-    def button_click(self, button, timeout):
+    def iniciar(self): # Inicializar Webdriver
+        try:
+            gc = Options()
+            gc.add_argument('user-data-dir=sel')
+            if os.name == 'nt':
+                print('Operative System> Windows')
+                return Chrome(options=self.gc, executable_path='./app/drivers/chromedriver.exe')
+            else:
+                print('Operative System> Unix')
+                gc.add_argument('headless')
+                gc.add_argument('no-sandbox')
+                return Chrome(options=self.gc, executable_path='./app/drivers/chromedriver')
+        except Exception as e:
+            print(e)
+        finally:
+            pass
+
+    def button_click(self, button, timeout): # Buscar boton
         #print(button)
         try:
             #btn = driver.find_element_by_xpath(button)
@@ -35,7 +46,7 @@ class selenium:
         except:
             return False
 
-    def pass_text(self, text, tagid, timeout):
+    def pass_text(self, text, tagid, timeout): # Pasar texto a elementos
         #print(tagid)
         try:
             #motivo = self.driver.find_element_by_xpath('//*[@id="{}"]'.format(tagid))
@@ -45,7 +56,7 @@ class selenium:
         except:
             return False
 
-    def run(self, ci):
+    def run(self, ci): # Main
         re = {}
         try:
             self.wait = False

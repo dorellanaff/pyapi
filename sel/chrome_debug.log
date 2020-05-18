@@ -1,3 +1,3 @@
-[21904:28736:0517/224216.190:ERROR:browser_switcher_service.cc(238)] XXX Init()
-[21904:28736:0517/225214.387:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
-[21904:28736:0517/225214.387:WARNING:pref_notifier_impl.cc(40)] Pref observer for browser.relaunch_notification_period found at shutdown.
+[28268:28412:0517/225318.244:ERROR:browser_switcher_service.cc(238)] XXX Init()
+[28268:28412:0517/225426.924:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[28268:28412:0517/225426.924:WARNING:pref_notifier_impl.cc(40)] Pref observer for browser.relaunch_notification_period found at shutdown.
