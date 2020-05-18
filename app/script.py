@@ -16,32 +16,34 @@ class selenium:
     ff.headless = True
     gc = Options()
     gc.add_argument('user-data-dir=sel')
-    gc.add_argument('headless')
-    gc.add_argument('no-sandbox')
+    #gc.add_argument('headless')
+    #gc.add_argument('no-sandbox')
     wait = True
 
     def __init__(self):
-        self.driver = Chrome(options=self.gc, executable_path='./app/drivers/chromedriver')
+        self.driver = Chrome(options=self.gc, executable_path='./app/drivers/chromedriver.exe')
         print('Iniciado Webdriver')
         pass
 
-    def button_click(self, button):
-        #btn = driver.find_element_by_xpath(button)
-        btn = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located((By.XPATH, button))) # presence_of_element_located
-        if btn:
+    def button_click(self, button, timeout):
+        #print(button)
+        try:
+            #btn = driver.find_element_by_xpath(button)
+            btn = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, button))) # presence_of_element_located
             btn.click()
             return True
-        else:
+        except:
             return False
 
-    def pass_text(self, text, tagid):
-        while True:
-            try:
-                motivo = self.driver.find_element_by_xpath('//*[@id="{}"]'.format(tagid))
-                motivo.send_keys(text)
-                break
-            except:
-                pass
+    def pass_text(self, text, tagid, timeout):
+        #print(tagid)
+        try:
+            #motivo = self.driver.find_element_by_xpath('//*[@id="{}"]'.format(tagid))
+            motivo = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.ID, tagid))) # presence_of_element_located
+            motivo.send_keys(text)
+            return True
+        except:
+            return False
 
     def run(self, ci):
         re = {}
@@ -50,16 +52,14 @@ class selenium:
             self.driver.get(url)
             startscript = datetime.datetime.now()
             #print(self.driver.title)
-            self.button_click('/html/body/div[5]/div[11]/button[2]/span') # Warning button
-            self.pass_text(ci, 'txtCi')
-            if self.button_click('//*[@id="btnSig1"]'): # Search button
-                self.pass_text('Consulta antecedentes', 'txtMotivo')
-                self.button_click('//*[@id="btnSig2"]') # Motivo button
+            self.button_click('/html/body/div[5]/div[11]/button[2]/span', 5) # Warning button
+            self.pass_text(ci, 'txtCi', 5)
+            self.button_click('//*[@id="btnSig1"]', 5) # Search button
+            if self.pass_text('Consulta antecedentes', 'txtMotivo', 15):
+                self.button_click('//*[@id="btnSig2"]', 5) # Motivo button
                 #self.driver.implicitly_wait(2) # seconds
                 name = self.driver.find_element_by_id('dvName1')
                 antecedentes = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "dvAntecedent1"))) # presence_of_element_located
-                print('Nombre: {}'.format(str(name.text)))
-                print('Antecedentes: {}'.format(str(antecedentes.text)))
                 endscript = datetime.datetime.now()
                 duration = endscript - startscript
                 print("Duracion script: {}".format(duration))

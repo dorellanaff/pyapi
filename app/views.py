@@ -16,4 +16,5 @@ def get_antecedentes():
             re = browser.run(ci)
             #job = q.enqueue_call(func=script.run, args=(ci,), timeout=-1)
             #id = job.get_id()
+            print(re)
             return re
