@@ -17,14 +17,14 @@ def get_antecedentes(id):
             #job = q.enqueue_call(func=script.run, args=(ci,), timeout=-1)
             #id = job.get_id()
             if status[0]:
-                re = pdf_reader(id, status[1])
+                print(status)
+                re = pdf_reader(id, status[1], status[2])
                 return jsonify(re)
             else:
                 abort(500, description="Uups")
 
-def pdf_reader(id, url):
-    pdf = "C:\\Users\\danie\\Documents\\Proyectos\\vscode\\py\\selenium\\pyantecedentes\\app\\pdf\\cert_ant_penales_{}.pdf".format(id)
-    pdffile = open(pdf, "rb")
+def pdf_reader(id, url, path):
+    pdffile = open(path, "rb")
     pdfread = PdfFileReader(pdffile)
     page = pdfread.getPage(0)
     pageContent = page.extractText()
@@ -40,26 +40,12 @@ def pdf_reader(id, url):
     }
     return re
 
-@app.route("/api", strict_slashes=False)
-def api_doc():
-    return pdf_reader()
-    #return "Documentacion"
-
 @app.route("/api/ci/<id>", strict_slashes=False) #
 def ci_antecedentes(id):
     if len(id) == 10 and type(id) is str:
         ci = id
         print('Buscando Cedula. {}'.format(ci))
         return get_antecedentes(ci)
-    return abort(400, description="Some parameters might not be correct")
-
-
-@app.route("/api/passport/<id>", strict_slashes=False) #
-def passport_antecedentes(id):
-    if type(id) is str:
-        passport = id
-        print('Buscando Pasaporte. {}'.format(passport))
-        return get_antecedentes(passport)
     return abort(400, description="Some parameters might not be correct")
 
 @app.errorhandler(404)

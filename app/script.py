@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxProfile, Chrome
 from time import strftime,sleep
 import datetime, os
+from pyvirtualdisplay import Display
 
 url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
 
@@ -23,15 +24,17 @@ class selenium:
     def iniciar(self): # Inicializar Webdriver
         try:
             gc = Options()
-            gc.add_argument('user-data-dir=sel')        
+            gc.add_argument('user-data-dir=sel')
             if os.name == 'nt':
                 print('Operative System> Windows')
                 path = './app/drivers/chromedriver.exe' 
                 self.download_dir = 'C:\\Users\\danie\\Documents\\Proyectos\\vscode\\py\\selenium\\pyantecedentes\\app\\pdf'
             else:
                 print('Operative System> Unix')
-                gc.add_argument('headless')
-                gc.add_argument('no-sandbox')
+                display = Display(visible=0, size=(1024, 768))
+                display.start()
+                #gc.add_argument('headless')
+                #gc.add_argument('no-sandbox')
                 path = './app/drivers/chromedriver'
                 self.download_dir = '/home/daniel/py/pyantecedentes/app/pdf'  # for linux/*nix, download_dir="/usr/Public"   
             gc.add_experimental_option('prefs', {
@@ -67,10 +70,11 @@ class selenium:
     def run(self, ci): # Main
         re = []
         pdfurl = ''
+        out_pdf = ''
         try:
             self.wait = False
             self.driver.get(url)
-            startscript = datetime.datetime.now()
+            #startscript = datetime.datetime.now()
             #print(self.driver.title)
             self.button_click('/html/body/div[5]/div[11]/button[2]/span', 5) # Warning button
             self.pass_text(ci, 'txtCi', 5)
@@ -78,19 +82,21 @@ class selenium:
             if self.pass_text('Consulta antecedentes', 'txtMotivo', 15):
                 self.button_click('//*[@id="btnSig2"]', 5) # Motivo button
                 #self.driver.implicitly_wait(2) # seconds
-                name = self.driver.find_element_by_id('dvName1')
-                antecedentes = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "dvAntecedent1"))) # presence_of_element_located
-                endscript = datetime.datetime.now()
-                duration = endscript - startscript
+                #name = self.driver.find_element_by_id('dvName1')
+                #antecedentes = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "dvAntecedent1"))) # presence_of_element_located
+                #endscript = datetime.datetime.now()
+                #duration = endscript - startscript
                 #re = {'CI': ci,'Name': str(name.text), 'Antecedentes': str(antecedentes.text), 'response': '{}'.format(str(duration))}
                 self.button_click('//*[@id="btnOpen"]/span', 5)
                 self.driver.switch_to.window(self.driver.window_handles[1])
                 pdfurl = self.driver.current_url
                 self.driver.close()
                 self.driver.switch_to.window(self.driver.window_handles[0])
-                print(pdfurl)
-                out_pdf = '{}.pdf'.format(ci)
-                os.system("wget -O {0} {1}".format(out_pdf, pdfurl))
+                out_pdf = '{}/{}.pdf'.format(self.download_dir, ci)
+                if os.name == 'nt':
+                    os.system("Invoke-WebRequest {0} -OutFile {1}".format(out_pdf, pdfurl))
+                else:
+                    os.system("wget -O {0} {1}".format(out_pdf, pdfurl))
                 re = True
             else:
                 #re = {'error': 'ci not found'}
@@ -100,4 +106,4 @@ class selenium:
             re = False
         finally:
             self.wait = True
-            return [re, pdfurl]
+            return [re, pdfurl, out_pdf]

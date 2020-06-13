@@ -1,5 +1,4 @@
 flask
 selenium
-redis
 flask-cors
-rq
+PyDF2
