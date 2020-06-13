@@ -1,7 +1,7 @@
 import os, time
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxProfile, Chrome
-from app import app, q
+from app import app
 from app.script import selenium
 from flask import Flask, jsonify, request, render_template, abort
 from PyPDF2 import PdfFileWriter, PdfFileReader
