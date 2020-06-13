@@ -3,3 +3,4 @@ selenium
 flask-cors
 PyDF2
 pyvirtualdisplay
+requests
