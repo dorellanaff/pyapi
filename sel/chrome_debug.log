@@ -8,3 +8,9 @@
 [9265:9321:0613/070529.299720:ERROR:object_proxy.cc(632)] Failed to call method: org.freedesktop.UPower.GetDisplayDevice: object_path= /org/freedesktop/UPower: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
 [9265:9321:0613/070529.299981:ERROR:object_proxy.cc(632)] Failed to call method: org.freedesktop.UPower.EnumerateDevices: object_path= /org/freedesktop/UPower: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files
 [9301:9301:0613/070529.424789:ERROR:viz_main_impl.cc(152)] Exiting GPU process due to errors during initialization
+[9265:9265:0613/072349.058910:ERROR:chrome_browser_main_extra_parts_x11.cc(62)] X IO error received (X server probably went away)
+[9265:9284:0613/072349.070977:ERROR:zygote_communication_linux.cc(276)] Failed to send GetTerminationStatus message to zygote
+[9265:9284:0613/072349.074788:WARNING:zygote_communication_linux.cc(288)] Socket closed prematurely.
+[9265:9265:0613/072349.080533:WARNING:zygote_communication_linux.cc(286)] Error reading message from zygote: Connection reset by peer (104)
+[9265:9265:0613/072349.085419:ERROR:zygote_communication_linux.cc(276)] Failed to send GetTerminationStatus message to zygote
+[9265:9265:0613/072349.085470:WARNING:zygote_communication_linux.cc(288)] Socket closed prematurely.

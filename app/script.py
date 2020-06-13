@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import Firefox, FirefoxOptions, FirefoxProfile, Chrome
 from time import strftime,sleep
-import datetime, os
+import datetime, os, requests
 from pyvirtualdisplay import Display
 
 url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
@@ -94,9 +94,11 @@ class selenium:
                 self.driver.switch_to.window(self.driver.window_handles[0])
                 out_pdf = '{}/{}.pdf'.format(self.download_dir, ci)
                 if os.name == 'nt':
-                    os.system("Invoke-WebRequest {0} -OutFile {1}".format(out_pdf, pdfurl))
+                    out_pdf = '{}\\{}.pdf'.format(self.download_dir, ci)
                 else:
-                    os.system("wget -O {0} {1}".format(out_pdf, pdfurl))
+                    out_pdf = '{}/{}.pdf'.format(self.download_dir, ci)
+                r = requests.get(pdfurl, stream=True, headers={'User-agent': 'Mozilla/5.0'})
+                open(out_pdf , 'wb').write(r.content)
                 re = True
             else:
                 #re = {'error': 'ci not found'}
