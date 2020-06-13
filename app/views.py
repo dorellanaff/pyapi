@@ -20,7 +20,7 @@ def get_antecedentes(id):
                 re = pdf_reader(id, status[1], status[2])
                 return jsonify(re)
             else:
-                abort(500, description="Uups")
+                return jsonify(error="Timeout exceeded"), 500
 
 def pdf_reader(id, url, path):
     pdffile = open(path, "rb")
@@ -45,7 +45,7 @@ def ci_antecedentes(id):
         ci = id
         print('Buscando Cedula. {}'.format(ci))
         return get_antecedentes(ci)
-    return abort(400, description="Some parameters might not be correct")
+    return jsonify(error="Some parameters might not be correct"), 400
 
 @app.errorhandler(404)
 def resource_not_found(e):
