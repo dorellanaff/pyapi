@@ -10,7 +10,8 @@ from time import strftime,sleep
 import datetime, os, requests
 from pyvirtualdisplay import Display
 
-url = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
+urlantecedentes = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
+urlant = 'https://sistemaunico.ant.gob.ec:5038/PortalWEB/paginas/clientes/clp_criterio_consulta.jsp'
 
 class selenium:
     wait = True
@@ -47,46 +48,71 @@ class selenium:
         except Exception as e:
             print(e)
 
-    def button_click(self, button, timeout): # Buscar boton
-        #print(button)
+    def select_input(self, xpath, text, timeout):
+        #print(xpath)
         try:
-            #btn = driver.find_element_by_xpath(button)
-            btn = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, button))) # presence_of_element_located
+            select = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
+            for option in select.find_elements_by_tag_name('option'):
+                if text != '':
+                    if option.text in text:
+                        option.click()
+                else:
+                    option.click()
+            return True
+        except Exception as e:
+            return False
+
+    def button_click(self, xpath, timeout): # Buscar boton
+        #print(xpath)
+        try:
+            #btn = driver.find_element_by_xpath(xpath)
+            btn = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
             btn.click()
             return True
         except:
             return False
 
-    def pass_text(self, text, tagid, timeout): # Pasar texto a elementos
+    def pass_text(self, text, tagid, timeout, by): # Pasar texto a elementos
         #print(tagid)
         try:
-            #motivo = self.driver.find_element_by_xpath('//*[@id="{}"]'.format(tagid))
-            motivo = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.ID, tagid))) # presence_of_element_located
-            motivo.send_keys(text)
+            #input = self.driver.find_element_by_xpath('//*[@id="{}"]'.format(tagid))
+            if by == 1:
+                input = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.ID, tagid))) # presence_of_element_located
+            else:
+                input = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, tagid))) # presence_of_element_located
+            input.send_keys(text)
             return True
         except:
             return False
 
-    def run(self, ci): # Main
+    def check_element(self, xpath, timeout): # Buscar elemento en DOM
+        #print(xpath)
+        try:
+            element = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
+            return True
+        except:
+            return False
+
+    def get_text(self, xpath, timeout): # Buscar elemento en DOM
+        #print(xpath)
+        try:
+            element = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
+            return element.text
+        except:
+            return ''
+
+    def antecedentes(self, ci): # Main
         re = []
         pdfurl = ''
         out_pdf = ''
         try:
             self.wait = False
-            self.driver.get(url)
-            #startscript = datetime.datetime.now()
-            #print(self.driver.title)
+            self.driver.get(urlantecedentes)
             self.button_click('/html/body/div[5]/div[11]/button[2]/span', 5) # Warning button
-            self.pass_text(ci, 'txtCi', 5)
+            self.pass_text(ci, 'txtCi', 5, 1)
             self.button_click('//*[@id="btnSig1"]', 5) # Search button
-            if self.pass_text('Consulta antecedentes', 'txtMotivo', 15):
+            if self.pass_text('Consulta antecedentes', 'txtMotivo', 15, 1):
                 self.button_click('//*[@id="btnSig2"]', 5) # Motivo button
-                #self.driver.implicitly_wait(2) # seconds
-                #name = self.driver.find_element_by_id('dvName1')
-                #antecedentes = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable((By.ID, "dvAntecedent1"))) # presence_of_element_located
-                #endscript = datetime.datetime.now()
-                #duration = endscript - startscript
-                #re = {'CI': ci,'Name': str(name.text), 'Antecedentes': str(antecedentes.text), 'response': '{}'.format(str(duration))}
                 self.button_click('//*[@id="btnOpen"]/span', 5)
                 self.driver.switch_to.window(self.driver.window_handles[1])
                 pdfurl = self.driver.current_url
@@ -101,7 +127,6 @@ class selenium:
                 open(out_pdf , 'wb').write(r.content)
                 re = True
             else:
-                #re = {'error': 'ci not found'}
                 re = False
         except Exception as e:
             print(e)
@@ -109,3 +134,28 @@ class selenium:
         finally:
             self.wait = True
             return [re, pdfurl, out_pdf]
+   
+    def ant(self, id): # Main
+        re = []
+        response = {}
+        try:
+            self.wait = False
+            self.driver.get(urlant) #
+            self.select_input('//*[@id="ps_tipo_identificacion"]', 'PLACA', 5) # Select option
+            self.pass_text(id, '//*[@id="ps_identificacion"]', 5, 0) # Input button
+            self.button_click('//*[@id="frm_consulta"]/div/a/img', 5) # Search button
+            if self.check_element('/html/body/table[1]/tbody/tr[1]/td[1]/strong', 15): # Busqueda correcta
+                response['Marca'] = self.get_text('/html/body/table[1]/tbody/tr[1]/td[3]', 5)
+                response['Modelo'] = self.get_text('/html/body/table[1]/tbody/tr[2]/td[2]', 5)
+                response['Color'] = self.get_text('/html/body/table[1]/tbody/tr[1]/td[5]', 5)
+                response['Año'] = self.get_text('/html/body/table[1]/tbody/tr[3]/td[2]', 5)
+                response['Placa'] = id
+                re = True
+            else:
+                re = False
+        except Exception as e:
+            print(e)
+            re = False
+        finally:
+            self.wait = True
+            return [re, response]

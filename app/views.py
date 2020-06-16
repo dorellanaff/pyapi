@@ -12,13 +12,21 @@ browser = selenium()
 def get_antecedentes(id):
     while True:
         if browser.wait == True:
-            status = browser.run(id)
-            #job = q.enqueue_call(func=script.run, args=(ci,), timeout=-1)
-            #id = job.get_id()
+            status = browser.antecedentes(id)
             if status[0]:
                 print(status)
                 re = pdf_reader(id, status[1], status[2])
-                return jsonify(re)
+                return jsonify(re), 200
+            else:
+                return jsonify(error="Timeout exceeded"), 500
+
+def get_placainfo(id):
+    while True:
+        if browser.wait == True:
+            status = browser.ant(id)
+            if status[0]:
+                print(status)
+                return jsonify(status[1]), 200
             else:
                 return jsonify(error="Timeout exceeded"), 500
 
@@ -39,12 +47,20 @@ def pdf_reader(id, url, path):
     }
     return re
 
-@app.route("/api/ci/<id>", strict_slashes=False) #
+@app.route("/api/antecedentes/ci/<id>", strict_slashes=False) #
 def ci_antecedentes(id):
     if len(id) == 10 and type(id) is str:
         ci = id
         print('Buscando Cedula. {}'.format(ci))
         return get_antecedentes(ci)
+    return jsonify(error="Some parameters might not be correct"), 400
+
+@app.route("/api/ant/placa/<id>", strict_slashes=False) #
+def placa_ant(id):
+    if len(id) == 7 and type(id) is str:
+        placa = id
+        print('Buscando Placa. {}'.format(placa))
+        return get_placainfo(placa)
     return jsonify(error="Some parameters might not be correct"), 400
 
 @app.errorhandler(404)
