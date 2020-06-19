@@ -26,9 +26,29 @@ def get_placainfo(id):
             status = browser.ant(id)
             if status[0]:
                 print(status)
-                return jsonify(status[1]), 200
+                return jsonify(status[1]), status[2]
             else:
-                return jsonify(error="Timeout exceeded"), 500
+                return jsonify(error="Timeout exceeded"), status[2]
+
+def get_luzinfo(p, op):
+    while True:
+        if browser.wait == True:
+            status = browser.luz(p, op)
+            if status[0]:
+                print(status)
+                return jsonify(status[1]), status[2]
+            else:
+                return jsonify(error="Timeout exceeded"), status[2]
+
+def get_cntinfo(p, op):
+    while True:
+        if browser.wait == True:
+            status = browser.luz(p, op)
+            if status[0]:
+                print(status)
+                return jsonify(status[1]), status[2]
+            else:
+                return jsonify(error="Timeout exceeded"), status[2]
 
 def pdf_reader(id, url, path):
     pdffile = open(path, "rb")
@@ -47,20 +67,52 @@ def pdf_reader(id, url, path):
     }
     return re
 
-@app.route("/api/antecedentes/ci/<id>", strict_slashes=False) #
-def ci_antecedentes(id):
-    if len(id) == 10 and type(id) is str:
-        ci = id
+@app.route("/api/antecedentes/ci/<p>", strict_slashes=False) #
+def ci_antecedentes(p):
+    if len(p) == 10 and type(p) is str:
+        ci = parameter
         print('Buscando Cedula. {}'.format(ci))
         return get_antecedentes(ci)
     return jsonify(error="Some parameters might not be correct"), 400
 
-@app.route("/api/ant/placa/<id>", strict_slashes=False) #
-def placa_ant(id):
-    if len(id) == 7 and type(id) is str:
-        placa = id
+@app.route("/api/ant/placa/<p>", strict_slashes=False) #
+def placa_ant(p):
+    if len(p) == 7 and type(p) is str:
+        placa = p
         print('Buscando Placa. {}'.format(placa))
         return get_placainfo(placa)
+    return jsonify(error="Some parameters might not be correct"), 400
+
+@app.route("/api/cnelep/ci/<p>", strict_slashes=False) #
+def luz_cicnelep(p):
+    if type(p) is str:
+        ci = p
+        print('Buscando Planilla Luz. CI {}'.format(ci))
+        return get_luzinfo(ci, 1)
+    return jsonify(error="Some parameters might not be correct"), 400
+
+@app.route("/api/cnelep/contrato/<p>", strict_slashes=False) #
+def luz_contratocnelep(p):
+    if type(p) is str:
+        contrato = p
+        print('Buscando Planilla Luz. Contrato {}'.format(contrato))
+        return get_luzinfo(contrato, 3)
+    return jsonify(error="Some parameters might not be correct"), 400
+
+@app.route("/api/cnelep/codigo/<p>", strict_slashes=False) #
+def luz_codigocnelep(p):
+    if type(p) is str:
+        codigo = p
+        print('Buscando Planilla Luz. Codigo {}'.format(codigo))
+        return get_luzinfo(codigo, 2)
+    return jsonify(error="Some parameters might not be correct"), 400
+
+@app.route("/api/cnt/fijo/<p>", strict_slashes=False) #
+def telefono_cnt(p):
+    if type(p) is str:
+        numero = p
+        print('Buscando Planilla Telefono. {}'.format(numero))
+        return get_cntinfo(numero, 2)
     return jsonify(error="Some parameters might not be correct"), 400
 
 @app.errorhandler(404)

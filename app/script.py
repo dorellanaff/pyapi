@@ -12,6 +12,8 @@ from pyvirtualdisplay import Display
 
 urlantecedentes = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
 urlant = 'https://sistemaunico.ant.gob.ec:5038/PortalWEB/paginas/clientes/clp_criterio_consulta.jsp'
+urlluzgye = 'http://190.120.76.177:8080/consultaplanillas/servlet/gob.ec.sapconsultas/'
+urlcnt = 'https://pagarmisfacturas.cnt.gob.ec/cntpagos/php/index.php'
 
 class selenium:
     wait = True
@@ -101,6 +103,14 @@ class selenium:
         except:
             return ''
 
+    def get_value(self, xpath, timeout): # Buscar elemento en DOM
+        #print(xpath)
+        try:
+            element = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
+            return element.get_attribute("value")
+        except:
+            return ''
+
     def antecedentes(self, ci): # Main
         re = []
         pdfurl = ''
@@ -138,24 +148,93 @@ class selenium:
     def ant(self, id): # Main
         re = []
         response = {}
+        status = 404
         try:
             self.wait = False
-            self.driver.get(urlant) #
+            self.driver.get(urlant)
             self.select_input('//*[@id="ps_tipo_identificacion"]', 'PLACA', 5) # Select option
-            self.pass_text(id, '//*[@id="ps_identificacion"]', 5, 0) # Input button
+            self.pass_text(id, '//*[@id="ps_identificacion"]', 5, 0) # Input button 0. search by path
             self.button_click('//*[@id="frm_consulta"]/div/a/img', 5) # Search button
-            if self.check_element('/html/body/table[1]/tbody/tr[1]/td[1]/strong', 15): # Busqueda correcta
+            if self.check_element('/html/body/table[1]/tbody/tr[1]/td[1]/strong', 4): # Busqueda correcta
                 response['Marca'] = self.get_text('/html/body/table[1]/tbody/tr[1]/td[3]', 5)
                 response['Modelo'] = self.get_text('/html/body/table[1]/tbody/tr[2]/td[2]', 5)
                 response['Color'] = self.get_text('/html/body/table[1]/tbody/tr[1]/td[5]', 5)
                 response['Año'] = self.get_text('/html/body/table[1]/tbody/tr[3]/td[2]', 5)
                 response['Placa'] = id
                 re = True
+                status = 200
             else:
-                re = False
+                re = True
+                response['error'] = 'Placa not found'
         except Exception as e:
             print(e)
             re = False
+            status = 500
         finally:
             self.wait = True
-            return [re, response]
+            return [re, response, status]
+
+    def luz(self, p, op): # Main
+        re = []
+        response = {}
+        status = 404
+        if op == 'ci': fop = '1'
+        elif op == 'contrato': fop = '3'
+        else: fop = '2' # codigo
+        try:
+            self.wait = False
+            self.driver.get(urlluzgye) # 
+            self.select_input('//*[@id="vTIPODOCUMENTO"]', fop, 5) # Select option
+            self.pass_text(p, '//*[@id="vNRODATO"]', 5, 0) # Input button 0. search by path
+            self.button_click('//*[@id="TABLE4"]/tbody/tr[2]/td[2]/input', 5) # Search button
+            if self.check_element('//*[@id="W0021Grid1ContainerRow_0001"]', 4): # Busqueda correcta
+                response['Cliente'] = self.get_text('//*[@id="span_W0021vCLIENTESAPNOMBRE_0001"]/a', 5)
+                response['Direccion'] = self.get_text('//*[@id="span_W0021vGRILLADIRECCION_0001"]', 5)
+                response['Contrato'] = self.get_text('//*[@id="span_W0021vGCLIENTESAPCONTRATO_0001"]', 5)
+                response['Codigo'] = self.get_text('//*[@id="span_W0021vGCLIENTESAPCUEN_0001"]', 5)
+                response['Deduda'] = self.get_text('//*[@id="span_W0021vGRILLAMONTO_0001"]', 5)
+                response['Ultimo Pago'] = self.get_text('//*[@id="span_W0021vFECHAULTPAGO_0001"]', 5)
+                response['Vencimiento'] = self.get_text('//*[@id="span_W0021vFECHAVTO_0001"]', 5) 
+                response['Nro Pendientes'] = self.get_text('//*[@id="W0021Grid1ContainerRow_0001"]/td[14]', 5) 
+                re = True
+                status = 200
+            else:
+                re = True
+                response['error'] = 'Planilla not found'
+        except Exception as e:
+            print('--error-luz {}'.format(e))
+            re = False
+            status = 500
+        finally:
+            self.wait = True
+            return [re, response, status]
+
+    def cnt(self, p, op): # Main
+        re = []
+        response = {}
+        status = 404
+        if op == '1': fxpath = '//*[@id="scrcons"]/div[9]/div[2]/form/button' # Movil
+        else: fxpath = '//*[@id="scrcons"]/div[9]/div[3]/form/button' # Fijo
+        try:
+            self.wait = False
+            self.driver.get(urlluzgye) # 
+            self.button_click(fxpath, 5) # Search button
+            self.pass_text(p, '//*[@id="numserv"]', 5, 0) # Input button 0. search by path
+            self.button_click('/html/body/div[1]/form/div[5]/div[2]/button', 5) # Search button
+            if self.check_element('//*[@id="frmProcesa"]/div[1]/div[2]', 4): # Busqueda correcta
+                response['Titular'] = self.get_value('//*[@id="frmProcesa"]/div[2]/div[2]/input', 5)
+                response['CI-RUC'] = self.get_value('//*[@id="frmProcesa"]/div[4]/div[2]/input', 5)
+                response['Numero'] = p
+                response['Total'] = self.get_value('//*[@id="frmProcesa"]/div[8]/div[2]/input', 5)
+                re = True
+                status = 200
+            else:
+                re = True
+                response['error'] = 'Planilla not found'
+        except Exception as e:
+            print('--error-cnt {}'.format(e))
+            re = False
+            status = 500
+        finally:
+            self.wait = True
+            return [re, response, status]
