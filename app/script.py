@@ -12,7 +12,7 @@ from pyvirtualdisplay import Display
 
 urlantecedentes = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertificados/antecedentes/'
 urlant = 'https://sistemaunico.ant.gob.ec:5038/PortalWEB/paginas/clientes/clp_criterio_consulta.jsp'
-urlluzgye = 'http://190.120.76.177:8080/consultaplanillas/servlet/gob.ec.sapconsultas/'
+urlluzgye = 'http://190.120.76.177:8080/consultaplanillas/servlet/gob.ec.sapconsultas'
 urlcnt = 'https://pagarmisfacturas.cnt.gob.ec/cntpagos/php/index.php'
 
 class selenium:
@@ -55,6 +55,7 @@ class selenium:
         try:
             select = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
             for option in select.find_elements_by_tag_name('option'):
+                print(option.text)
                 if text != '':
                     if option.text in text:
                         option.click()
@@ -178,13 +179,13 @@ class selenium:
         re = []
         response = {}
         status = 404
-        if op == 'ci': fop = '1'
-        elif op == 'contrato': fop = '3'
-        else: fop = '2' # codigo
+        if op == 1: fop = 'Consulta por Cédula o RUC'
+        elif op == 2: fop = 'Consulta por Código Cliente*'
+        else: fop = ' Consulta por Contrato'
         try:
             self.wait = False
             self.driver.get(urlluzgye) # 
-            self.select_input('//*[@id="vTIPODOCUMENTO"]', fop, 5) # Select option
+            self.select_input('/html/body/form/table/tbody/tr[1]/td/table/tbody/tr[1]/td[1]/select', fop, 5) # Select option
             self.pass_text(p, '//*[@id="vNRODATO"]', 5, 0) # Input button 0. search by path
             self.button_click('//*[@id="TABLE4"]/tbody/tr[2]/td[2]/input', 5) # Search button
             if self.check_element('//*[@id="W0021Grid1ContainerRow_0001"]', 4): # Busqueda correcta
@@ -192,7 +193,7 @@ class selenium:
                 response['Direccion'] = self.get_text('//*[@id="span_W0021vGRILLADIRECCION_0001"]', 5)
                 response['Contrato'] = self.get_text('//*[@id="span_W0021vGCLIENTESAPCONTRATO_0001"]', 5)
                 response['Codigo'] = self.get_text('//*[@id="span_W0021vGCLIENTESAPCUEN_0001"]', 5)
-                response['Deduda'] = self.get_text('//*[@id="span_W0021vGRILLAMONTO_0001"]', 5)
+                response['Deduda'] = '$ '+ self.get_text('//*[@id="span_W0021vGRILLAMONTO_0001"]', 5)
                 response['Ultimo Pago'] = self.get_text('//*[@id="span_W0021vFECHAULTPAGO_0001"]', 5)
                 response['Vencimiento'] = self.get_text('//*[@id="span_W0021vFECHAVTO_0001"]', 5) 
                 response['Nro Pendientes'] = self.get_text('//*[@id="W0021Grid1ContainerRow_0001"]/td[14]', 5) 
@@ -217,7 +218,7 @@ class selenium:
         else: fxpath = '//*[@id="scrcons"]/div[9]/div[3]/form/button' # Fijo
         try:
             self.wait = False
-            self.driver.get(urlluzgye) # 
+            self.driver.get(urlcnt) # 
             self.button_click(fxpath, 5) # Search button
             self.pass_text(p, '//*[@id="numserv"]', 5, 0) # Input button 0. search by path
             self.button_click('/html/body/div[1]/form/div[5]/div[2]/button', 5) # Search button

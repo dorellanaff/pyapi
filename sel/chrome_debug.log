@@ -1,8 +1,3 @@
-[27354:27354:0619/023822.004086:ERROR:edid_parser.cc(102)] Too short EDID data: manufacturer id
-[27354:27386:0619/023822.093307:WARNING:backend_impl.cc(1813)] Destroying invalid entry.
-[27388:27388:0619/023822.109709:ERROR:gl_surface_glx.cc(454)] glxQueryVersion failed
-[27388:27388:0619/023822.116298:ERROR:gl_initializer_x11.cc(148)] GLSurfaceGLX::InitializeOneOff failed.
-[27388:27388:0619/023822.120729:ERROR:broker_posix.cc(43)] Invalid node channel message
-[27391:27391:0619/023822.256064:ERROR:broker_posix.cc(43)] Invalid node channel message
-[27388:27388:0100/000000.133191:INFO:child_thread_impl.cc(839)] ChildThreadImpl::EnsureConnected()
-[27391:27391:0619/023837.256649:INFO:child_thread_impl.cc(839)] ChildThreadImpl::EnsureConnected()
+[11980:8160:0618/220034.226:INFO:CONSOLE(171)] "Using jquery from GX distr.", source: http://190.120.76.177:8080/consultaplanillas/static/gxgral.js?115824 (171)
+[11980:8160:0618/220034.226:INFO:CONSOLE(171)] "global $ is jquery1.9.1", source: http://190.120.76.177:8080/consultaplanillas/static/gxgral.js?115824 (171)
+[11980:8160:0618/220034.316:INFO:CONSOLE(193)] "Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. For more help, check https://xhr.spec.whatwg.org/.", source: http://190.120.76.177:8080/consultaplanillas/static/gxgral.js?115824 (193)

@@ -43,7 +43,7 @@ def get_luzinfo(p, op):
 def get_cntinfo(p, op):
     while True:
         if browser.wait == True:
-            status = browser.luz(p, op)
+            status = browser.cnt(p, op)
             if status[0]:
                 print(status)
                 return jsonify(status[1]), status[2]
