@@ -14,6 +14,7 @@ urlantecedentes = 'http://certificados.ministeriodegobierno.gob.ec/gestorcertifi
 urlant = 'https://sistemaunico.ant.gob.ec:5038/PortalWEB/paginas/clientes/clp_criterio_consulta.jsp'
 urlluzgye = 'http://190.120.76.177:8080/consultaplanillas/servlet/gob.ec.sapconsultas'
 urlcnt = 'https://pagarmisfacturas.cnt.gob.ec/cntpagos/php/index.php'
+urlcleverbot = 'https://www.cleverbot.com/'
 
 class selenium:
     wait = True
@@ -55,7 +56,6 @@ class selenium:
         try:
             select = WebDriverWait(self.driver, timeout).until(EC.visibility_of_element_located((By.XPATH, xpath))) # presence_of_element_located
             for option in select.find_elements_by_tag_name('option'):
-                print(option.text)
                 if text != '':
                     if option.text in text:
                         option.click()
@@ -236,6 +236,28 @@ class selenium:
             print('--error-cnt {}'.format(e))
             re = False
             status = 500
+        finally:
+            self.wait = True
+            return [re, response, status]
+
+    def cleverbot(self, p): # Main
+        re = True
+        response = {}
+        status = 200
+        try:
+            self.wait = False
+            self.driver.get(urlcleverbot)
+            self.pass_text(p, '//*[@id="avatarform"]/input[1]', 5, 0) # Input button 0. search by path
+            self.driver.find_element_by_xpath('//*[@id="avatarform"]/input[1]').send_keys(Keys.ENTER)
+            time.sleep(2)
+            msg = self.check_element('//*[@id="line1"]/span[1]', 4)
+            if msg: # Busqueda correcta
+                response['msg'] = msg
+            else:
+                response['msg'] = 'Disculpa no te entendi'
+        except Exception as e:
+            print('--error-cleverbot {}'.format(e))
+            response['msg'] = 'Disculpa no te entendi'
         finally:
             self.wait = True
             return [re, response, status]

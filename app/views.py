@@ -40,6 +40,13 @@ def get_luzinfo(p, op):
             else:
                 return jsonify(error="Timeout exceeded"), status[2]
 
+def get_cleverresponse(p):
+    while True:
+        if browser.wait == True:
+            status = browser.cleverbot(p)
+            print(status)
+            return jsonify(status[1]), status[2]
+
 def get_cntinfo(p, op):
     while True:
         if browser.wait == True:
@@ -113,6 +120,12 @@ def telefono_cnt(p):
         numero = p
         print('Buscando Planilla Telefono. {}'.format(numero))
         return get_cntinfo(numero, 2)
+    return jsonify(error="Some parameters might not be correct"), 400
+
+@app.route("/api/cleverbot/<p>", strict_slashes=False) #
+def cleverbot(p):
+    if type(p) is str:
+        return get_cleverresponse(p)
     return jsonify(error="Some parameters might not be correct"), 400
 
 @app.errorhandler(404)
